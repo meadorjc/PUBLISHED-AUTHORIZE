@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<getTransactionDetailsRequest xmlns="AnetApi/xml/v1/schema/AnetApiSchema.xsd">
+	<merchantAuthentication>
+		<name></name>
+		<transactionKey></transactionKey>
+	</merchantAuthentication>
+	<transId></transId>
+</getTransactionDetailsRequest>
