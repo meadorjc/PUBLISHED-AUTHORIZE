@@ -16,3 +16,5 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 *.txt eol=crlf
+*.config eol=crlf
+*.xml eol=crlf
