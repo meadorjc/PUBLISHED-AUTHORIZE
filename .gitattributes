@@ -18,3 +18,4 @@
 *.txt eol=crlf
 *.config eol=crlf
 *.xml eol=crlf
+*.ps1 eol=crlf
