@@ -15,13 +15,13 @@ Add-Type -AssemblyName System.Windows.Forms
 # ------------------------------------------------------------------------------------------
 # CONSTANTS
 # ------------------------------------------------------------------------------------------
-Set-Variable Uri 														-option Constant	-value 'https://api.authorize.net/xml/v1/request.api'
-Set-Variable NameSpace 											-option Constant	-value @{dns="AnetApi/xml/v1/schema/AnetApiSchema.xsd"}
-Set-Variable TransactionFilterFile					-option Constant 	-value ".\TransactionDetailsFilter.config"
-Set-Variable MerchantAuthenticationFile 		-option Constant 	-value ".\MerchantAuthentication.config"
-Set-Variable SettledBatchListRequestFile 		-option Constant 	-value ".\getSettledBatchListRequest.xml"
-Set-Variable TransactionListRequestFile 		-option Constant 	-value ".\getTransactionListRequest.xml"
-Set-Variable TransactionDetailsRequestFile	-option Constant 	-value ".\getTransactionDetailsRequest.xml"
+Set-Variable Uri 							-option Constant	-value 'https://api.authorize.net/xml/v1/request.api'
+Set-Variable NameSpace 						-option Constant	-value @{dns="AnetApi/xml/v1/schema/AnetApiSchema.xsd"}
+Set-Variable TransactionFilterFile			-option Constant	-value ".\TransactionDetailsFilter.config"
+Set-Variable MerchantAuthenticationFile 	-option Constant	-value ".\MerchantAuthentication.config"
+Set-Variable SettledBatchListRequestFile 	-option Constant	-value ".\getSettledBatchListRequest.xml"
+Set-Variable TransactionListRequestFile 	-option Constant	-value ".\getTransactionListRequest.xml"
+Set-Variable TransactionDetailsRequestFile	-option Constant	-value ".\getTransactionDetailsRequest.xml"
 
 # ------------------------------------------------------------------------------------------
 # FUNCTION DEFINITIONS
@@ -34,7 +34,7 @@ function Get-RequestBody([string]$TransactionType)
 {
 	switch($TransactionType) {
 		"SettledBatchListRequest" 	{ $Body = Get-Content $SettledBatchListRequestFile 	| Out-String; break}
-		"TransactionListRequest" 		{ $Body = Get-Content $TransactionListRequestFile 	| Out-String; break}
+		"TransactionListRequest" 	{ $Body = Get-Content $TransactionListRequestFile 	| Out-String; break}
 		"TransactionDetailsRequest"	{ $Body = Get-Content $TransactionDetailsRequestFile | Out-String; break}
 	}
 	return $Body
@@ -278,8 +278,8 @@ $LastMonth = $Today.AddMonths(-1);
 
 # Set parameters to send to Authorize.NET
 [xml]$Body = Get-RequestBody "SettledBatchListRequest"
-$Body.getSettledBatchListRequest.merchantAuthentication.name = $MerchantAuthentication.Name
-$Body.getSettledBatchListRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey
+$Body.getSettledBatchListRequest.merchantAuthentication.name = $MerchantAuthentication.Name.ToString()
+$Body.getSettledBatchListRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey.ToString()
 $Body.getSettledBatchListRequest.includeStatistics = "true"
 $Body.getSettledBatchListRequest.firstSettlementDate = $($Lastmonth.ToString("yyyy-MM-dd'T'HH:mm:ss"))
 $Body.getSettledBatchListRequest.lastSettlementDate = $($Today.ToString("yyyy-MM-dd'T'HH:mm:ss"))
@@ -305,8 +305,8 @@ $TransactionForm.Show()
 
 # Get the lists of transactions for selected batches
 [xml]$Body = Get-RequestBody "TransactionListRequest"
-$Body.getTransactionListRequest.merchantAuthentication.name = $MerchantAuthentication.Name
-$Body.getTransactionListRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey
+$Body.getTransactionListRequest.merchantAuthentication.name = $MerchantAuthentication.Name.ToString()
+$Body.getTransactionListRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey.ToString()
 $Transactions = @()
 $TotalRecordCount = 0;
 foreach ($SelectedItem in $BatchSelectForm.Controls["Listview"].SelectedItems) {
@@ -327,8 +327,8 @@ $Filters = Get-TransactionFilters
 
 # Get the details of each transaction
 [xml]$Body = Get-RequestBody "TransactionDetailsRequest"
-$Body.getTransactionDetailsRequest.merchantAuthentication.name = $MerchantAuthentication.Name
-$Body.getTransactionDetailsRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey
+$Body.getTransactionDetailsRequest.merchantAuthentication.name = $MerchantAuthentication.Name.ToString()
+$Body.getTransactionDetailsRequest.merchantAuthentication.transactionKey = $MerchantAuthentication.TransactionKey.ToString()
 $TransactionRecordList = @()
 
 #Create Header	
@@ -341,7 +341,7 @@ $Count = 0
 foreach ($Transaction in $Transactions){
 	$Count++
 	# Set parameters and send to Authorize.NET
-	$Body.getTransactionDetailsRequest.transId = $Transaction.TransId
+	$Body.getTransactionDetailsRequest.transId = $Transaction.TransId.ToString()
 	
 	# Post and Get to ANET
 	[string]$Data = Get-AuthorizeXmlResponseString $Uri $Body.OuterXml
